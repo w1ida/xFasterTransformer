@@ -62,12 +62,12 @@ while [ -n "$1" ]; do
         ;;
     -s | --sockets)
         case $2 in
-        "1" | "2")
+        "1" | "2" | "3" | "4" |)
             sockets=$2
             shift 2
             ;;
         *)
-            Error "sockets must in 1 or 2."
+            Error "sockets must between 1 and 4."
             exit 1
             ;;
         esac
@@ -248,15 +248,15 @@ elif [[ "${numa_nodes}" -eq 4 ]] && [[ "${sockets_num}" -eq 4 ]]; then
     Info "OMP_NUM_THREADS: $((${cores_per_numa} / 2))"
     run_cmd="mpirun \
     -n 1 bash run.sh 0 0 ${OMP_NUM_THREADS} 0"
-    if [ "$sockets" == "2" ]; then
+    if [ "$sockets" -ge "2" ]; then
         run_cmd+=" : \
         -n 1 bash run.sh 1 1 ${OMP_NUM_THREADS} 1"
     fi
-    if [ "$sockets" == "3" ]; then
+    if [ "$sockets" -ge "3" ]; then
         run_cmd+=" : \
         -n 1 bash run.sh 2 2 ${OMP_NUM_THREADS} 2"
     fi
-    if [ "$sockets" == "4" ]; then
+    if [ "$sockets" -ge "4" ]; then
         run_cmd+=" : \
         -n 1 bash run.sh 3 3 ${OMP_NUM_THREADS} 3"
     fi
